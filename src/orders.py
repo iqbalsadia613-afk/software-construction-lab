@@ -1,29 +1,36 @@
-def calc(o):
-    t = 0
-    for i in o["items"]:
-        p = i["price"]
-        q = i["qty"]
-        if p > 0:
-            if q > 0:
-                t = t + p * q
-    if o["member"] == True:
-        if t > 100:
-            d = t * 0.2
+def calculate_order_total(order):
+    subtotal = 0
+
+    for item in order["items"]:
+        price = item["price"]
+        quantity = item["qty"]
+
+        if price > 0:
+            if quantity > 0:
+                subtotal = subtotal + price * quantity
+
+    if order["member"] == True:
+        if subtotal > 100:
+            discount_amount = subtotal * 0.2
         else:
-            if t > 50:
-                d = t * 0.1
+            if subtotal > 50:
+                discount_amount = subtotal * 0.1
             else:
-                d = 0
+                discount_amount = 0
     else:
-        d = 0
-    t = t - d
-    if o["country"] == "PK":
-        s = 5
+        discount_amount = 0
+
+    subtotal = subtotal - discount_amount
+
+    if order["country"] == "PK":
+        shipping_cost = 5
     else:
-        if o["country"] == "US":
-            s = 15
+        if order["country"] == "US":
+            shipping_cost = 15
         else:
-            s = 25
-    t = t + s
-    print("Total: " + str(t))
-    return t
+            shipping_cost = 25
+
+    subtotal = subtotal + shipping_cost
+
+    print("Total: " + str(subtotal))
+    return subtotal

@@ -5,11 +5,16 @@ def calculate_items_subtotal(order):
         price = item["price"]
         quantity = item["qty"]
 
-        if price > 0:
-            if quantity > 0:
-                subtotal = subtotal + price * quantity
+        if price <= 0:
+            continue
+
+        if quantity <= 0:
+            continue
+
+        subtotal = subtotal + price * quantity
 
     return subtotal
+
 
 def calculate_member_discount(subtotal, is_member):
     if not is_member:
@@ -23,6 +28,7 @@ def calculate_member_discount(subtotal, is_member):
 
     return 0
 
+
 def calculate_shipping_cost(country):
     if country == "PK":
         return 5
@@ -32,11 +38,12 @@ def calculate_shipping_cost(country):
 
     return 25
 
+
 def calculate_order_total(order):
     subtotal = calculate_items_subtotal(order)
-    discount_amount = calculate_member_discount(subtotal, order["member"])
+    discount_amount = calculate_member_discount(
+        subtotal, order["member"]
+    )
     shipping_cost = calculate_shipping_cost(order["country"])
 
-    total = subtotal - discount_amount + shipping_cost
-
-    return total
+    return subtotal - discount_amount + shipping_cost

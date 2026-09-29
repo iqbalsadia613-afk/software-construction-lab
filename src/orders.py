@@ -1,4 +1,4 @@
-def calculate_order_total(order):
+def calculate_items_subtotal(order):
     subtotal = 0
 
     for item in order["items"]:
@@ -9,28 +9,34 @@ def calculate_order_total(order):
             if quantity > 0:
                 subtotal = subtotal + price * quantity
 
-    if order["member"] == True:
-        if subtotal > 100:
-            discount_amount = subtotal * 0.2
-        else:
-            if subtotal > 50:
-                discount_amount = subtotal * 0.1
-            else:
-                discount_amount = 0
-    else:
-        discount_amount = 0
-
-    subtotal = subtotal - discount_amount
-
-    if order["country"] == "PK":
-        shipping_cost = 5
-    else:
-        if order["country"] == "US":
-            shipping_cost = 15
-        else:
-            shipping_cost = 25
-
-    subtotal = subtotal + shipping_cost
-
-    print("Total: " + str(subtotal))
     return subtotal
+
+def calculate_member_discount(subtotal, is_member):
+    if not is_member:
+        return 0
+
+    if subtotal > 100:
+        return subtotal * 0.2
+
+    if subtotal > 50:
+        return subtotal * 0.1
+
+    return 0
+
+def calculate_shipping_cost(country):
+    if country == "PK":
+        return 5
+
+    if country == "US":
+        return 15
+
+    return 25
+
+def calculate_order_total(order):
+    subtotal = calculate_items_subtotal(order)
+    discount_amount = calculate_member_discount(subtotal, order["member"])
+    shipping_cost = calculate_shipping_cost(order["country"])
+
+    total = subtotal - discount_amount + shipping_cost
+
+    return total
